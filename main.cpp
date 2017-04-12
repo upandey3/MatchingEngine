@@ -1,16 +1,11 @@
-//
-//  main.cpp
-//  xCelorTestr
-//
-//  Created by Utkarsh Pandey on 4/10/17.
-//  Copyright © 2017 Utkarsh Pandey. All rights reserved.
-//
-
 #include <iostream>
-
+#include "MatchingEngine.h"
+#include "TestME.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+
+    // Initializing the test class for the Machine Engine
+    TestME a;
+    a.test_init();
     return 0;
 }
