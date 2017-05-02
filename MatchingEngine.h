@@ -21,6 +21,14 @@ using std::unordered_map;
 using std::vector;
 using std::string;
 
+struct orderDet_t{
+    int price;
+    int quantity;
+    int buy;
+    orderDet_t(){}
+    orderDet_t(int a, int b, int c): price(a), quantity(b), buy(c){}
+};
+
 class MatchingEngine{
 public:
     /* Constructors */
@@ -50,7 +58,8 @@ private:
     /* Tables mapping price as a key to buy amounts and sell amounts */
     priceMap buy_table, sell_table;
     /* A map of orderID's to array of price, amount and buy flag, updated on add & cancel */
-    unordered_map<orderId, vector<orderDetails>> orders_table;
+    //unordered_map<orderId, vector<orderDetails>> orders_table;
+    unordered_map<orderId, orderDet_t> orders_table;
 
 };
 

@@ -28,7 +28,9 @@ int MatchingEngine::addLimitOrder(int orderId, int price, int qty, bool buy){
     if (tradedQty) // If trade is successful,
         limitOrderTraded(orderId, price, tradedQty);
     else { // else limit order is added to the order book
-        orders_table[orderId] = vector<orderDetails> {price, qty, buy};
+        orderDet_t det(price, qty, buy);
+        orders_table[orderId] = det;
+        // orders_table[orderId] = vector<orderDetails> {price, qty, buy};
         limitOrderAdded(orderId, price, qty);
     }
     std::cout << "Traded quantity is " << tradedQty << std::endl;
@@ -76,18 +78,30 @@ int MatchingEngine::cancelLimitOrder(int orderId){
     //If the orderId has not been used before, it's an invalid request
     if (orders_table.find(orderId) == orders_table.end())
         return -1;
-    vector<orderDetails> order = orders_table[orderId];
+    //vector<orderDetails> order = orders_table[orderId];
 
-    if (order[BUY]){
+    orderDet_t * order = &orders_table[orderId];
 
-        if ((buy_table[order[PRICE]] -= order[QTY]) <= 0)
-            buy_table.erase(order[PRICE]);
+    if (order->buy){
+
+        if ((buy_table[order->price] -= order->quantity) <= 0)
+            buy_table.erase(order->price);
 
     } else {
 
-        if ((sell_table[order[PRICE]] -= order[QTY]) <= 0)
-            sell_table.erase(order[PRICE]);
+        if ((sell_table[order->price] -= order->quantity) <= 0)
+            sell_table.erase(order->price);
     }
+    // if (order[BUY]){
+    //
+    //     if ((buy_table[order[PRICE]] -= order[QTY]) <= 0)
+    //         buy_table.erase(order[PRICE]);
+    //
+    // } else {
+    //
+    //     if ((sell_table[order[PRICE]] -= order[QTY]) <= 0)
+    //         sell_table.erase(order[PRICE]);
+    // }
     orders_table.erase(orderId);
     limitOrderCancelled(orderId);
     return 0;
@@ -128,11 +142,18 @@ void MatchingEngine::printOrderBook(){
 /* Prints the order_tables entries(list of all the orders) */
 void MatchingEngine::printOrdersTable(){
 
+    // std::cout << "\n         Orders Table" << std::endl;
+    // std::cout << "OrderID" << "   Price" << "   Amount" << "   Buy Flag" << std::endl;
+    // for (auto key : orders_table)
+    //     std::cout << key.first << "       " << key.second[PRICE]
+    //     << "        " << key.second[QTY] << "        " << key.second[BUY] << std::endl;
+
+    std::cout << std::endl << std::endl;
     std::cout << "\n         Orders Table" << std::endl;
     std::cout << "OrderID" << "   Price" << "   Amount" << "   Buy Flag" << std::endl;
     for (auto key : orders_table)
-        std::cout << key.first << "       " << key.second[PRICE]
-        << "        " << key.second[QTY] << "        " << key.second[BUY] << std::endl;
+        std::cout << key.first << "       " << key.second.price
+        << "        " << key.second.quantity << "        " << key.second.buy << std::endl;
     std::cout << std::endl << std::endl;
 }
 
